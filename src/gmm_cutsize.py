@@ -9,56 +9,32 @@ import networkx as nx
 import gurobipy as gp
 from gurobipy import GRB
 
-def get_L(G, scores_dict):
+def get_L(G, names, scores):
 
-    n = len(scores_dict)
-    
-    # maps vertices to indices
-    index_dict = {}
-    
-    # maps indices to vertices
-    vertex_dict = {}
+    n = len(scores)
+
+    # should be ordered according to vertex_to_index
+    W = scores
     
     A = np.zeros((n, n))
     D = np.zeros((n, n))
     W = np.zeros(n)
     
-    avail_index = 0
-    
     for e in G.edges:
         v0 = e[0]
         v1 = e[1]
 
-        index0 = index_dict.get(v0)
-        if index0 is None:
-            index_dict[v0] = avail_index
-            vertex_dict[avail_index] = v0
-            index0 = avail_index
-            avail_index += 1
-
-        index1 = index_dict.get(v1)
-        if index1 is None:
-            index_dict[v1] = avail_index
-            vertex_dict[avail_index] = v1
-            index1 = avail_index
-            avail_index += 1
-
-    A[index0][index1] = 1
-    A[index1][index0] = 1
-                    
-    D[index0][index0] += 1
-    D[index1][index1] += 1
+        index0 = names.index(v0)
+        index1 = names.index(v1)
+        
+        A[index0][index1] = 1
+        A[index1][index0] = 1
+    
+        D[index0][index0] += 1
+        D[index1][index1] += 1
 
     L = D-A
 
-    for i in range(n):
-        W[i] = scores_dict[vertex_dict[i]]
-    
-    # just some checks
-    if avail_index != n:
-        print("avail_index != n; too many or too few vertices indexed")
-        return None, None, None
-    
     return L, W, vertex_dict
 
 def solve_cut(L, W, k, rho):
@@ -117,9 +93,13 @@ def solve_cut(L, W, k, rho):
 
     return indnices
 
-def find_cutsize(G, scores_dict, rho):
-    mu_est, alpha_est = single_em(scores_dict.values())
+def find_cutsize(G, names, scores, rho):
+
+    mu_est, alpha_est = single_em(scores)
     alpha_n_est = int(alpha_est*n)
-    L, W, vertex_dict = get_L(G, scores_dict)
+
+    L, W, vertex_dict = get_L(G, names, scores)
+
     indices = solve_cut(L, W, n, alpha_n_est, rho)
+
     return indices
