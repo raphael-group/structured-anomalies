@@ -91,7 +91,7 @@ def solve_cut(L, W, k, rho):
             indices.append(curr_index)
         curr_index += 1
 
-    return indnices
+    return indices
 
 def find_cutsize(G, names, scores, rho):
 
