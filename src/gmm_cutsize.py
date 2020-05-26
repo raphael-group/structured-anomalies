@@ -1,13 +1,11 @@
-import sys
-import csv
 import math
-import time
-
 import numpy as np
 import networkx as nx
 
 import gurobipy as gp
 from gurobipy import GRB
+
+from common import single_em
 
 def get_L(G, names, scores):
 
@@ -85,6 +83,9 @@ def solve_cut(L, W, k, rho):
 
     return indices
 
+# G should be a networkx graph.
+# names, scores should be aligned. 
+# rho is the maximum cut size.
 def find_cutsize(G, names, scores, rho):
 
     mu_est, alpha_est = single_em(scores)
