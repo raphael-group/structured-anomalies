@@ -10,10 +10,25 @@ Download the repository.
 
     git clone https://github.com/raphael-group/structured-anomalies.git
     
+   
+##### Required
+
+* Linux/Unix
+* [Python (2.7 or 3.6)](http://python.org/)
+* [NumPy (1.17)](http://www.numpy.org/)
+* [SciPy (1.3)](http://www.scipy.org/)
+* [h5py (2.10)](http://www.h5py.org/)
+* [NetworkX (2.4)](https://networkx.github.io/)
     
 ### Input
 
-Finding an anomaly requires at least one input file. 
+##### Anomaly type
+
+* Connected: This anomaly is a connected subgraph of some larger graph. To find this type of anomaly, use [NetMix](https://github.com/raphael-group/netmix).
+* Unconstrained: This anomaly is a subset of vertices of a graph where edges are nonexistent or ignored.
+* Line: This anomaly is a connected subgraph of a line-shaped graph, which means it's a smaller line.
+* Submatrix: This anomaly is a submatrix of a matrix. 
+* Cutsize: This anomaly is a subgraph of some larger graph such that the weight of the cut is less than some predefined rho. 
 
 ##### Gene-to-score file
 This is a `.tsv` file. It is needed for all anomalies except the submatrix anomaly. 
