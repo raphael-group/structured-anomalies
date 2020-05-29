@@ -24,11 +24,11 @@ Download the repository.
 
 ##### Anomaly type
 
-* Connected: This anomaly is a connected subgraph of some larger graph. To find this type of anomaly, use [NetMix](https://github.com/raphael-group/netmix).
-* Unconstrained: This anomaly is a subset of vertices of a graph where edges are nonexistent or ignored.
-* Line: This anomaly is a connected subgraph of a line-shaped graph, which means it's a smaller line.
-* Submatrix: This anomaly is a submatrix of a matrix. 
-* Cutsize: This anomaly is a subgraph of some larger graph such that the weight of the cut is less than some predefined rho. 
+* `connected`: This anomaly is a connected subgraph of some larger graph. To find this type of anomaly, use [NetMix](https://github.com/raphael-group/netmix).
+* `cutsize`: This anomaly is a subgraph of some larger graph such that the weight of the cut is less than some predefined rho. 
+* `line`: This anomaly is a connected subgraph of a line-shaped graph, which means it's a smaller line.
+* `submatrix`: This anomaly is a submatrix of a matrix. 
+* `unconstrained`: This anomaly is a subset of vertices of a graph where edges are nonexistent or ignored.
 
 ##### Gene-to-score file
 This is a `.tsv` file. It is needed for all anomalies except the submatrix anomaly. 
