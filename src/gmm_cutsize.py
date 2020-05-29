@@ -67,10 +67,9 @@ def solve_cut(L, W, k, rho):
         for j in range(n):
             expr2 += curr_x * L[i][j] * (nodes[j] - 0.5)
     model.addConstr(expr2, GRB.LESS_EQUAL, rho)
-    
     model.optimize()
-    
-    
+
+    # Get indices of nonzero variables. 
     count = 0
     scores = [None for _ in range(n)]
     node_vals = [0 for _ in range(n)]
@@ -83,7 +82,7 @@ def solve_cut(L, W, k, rho):
 
     return indices
 
-# G should be a networkx graph.
+# G: NetworkX graph.
 # names, scores should be aligned. 
 # rho is the maximum cut size.
 def find_cutsize(G, names, scores, rho):

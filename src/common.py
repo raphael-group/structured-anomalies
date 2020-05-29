@@ -65,3 +65,114 @@ def calc_fmeasure(pred_set,act_set):
     else:
         return hmean([prec, recall])
 
+################################################################################
+#
+# IO functions
+#
+################################################################################
+
+def is_number(x):
+    try:
+        float(x)
+        return True
+    except ValueError:
+        return False
+
+def save_nodes(filename, nodes):
+    '''
+    Load nodes.
+    '''
+    with open(filename, 'w') as f:
+        f.write('\n'.join(str(node) for node in nodes))
+
+def load_node_score(filename):
+    '''
+    Load node scores.
+    '''
+    nodes = []
+    scores = []
+    node_to_score = dict()
+    with open(filename, 'r') as f:
+        for l in f:
+            if not l.startswith('#'):
+                arrs = l.strip().split()
+                if len(arrs)==2:
+                    node = arrs[0]
+                    if is_number(arrs[1]):
+                        score = float(arrs[1])
+                        if np.isfinite(score):
+                            nodes.append(node)
+                            scores.append(score)
+                        else:
+                            raise Warning('{} is not a valid node score; input line omitted.'.format(l.strip()))    
+                    else:
+                        raise Warning('{} is not a valid node score; input line omitted.'.format(l.strip()))
+                elif arrs:
+                    raise Warning('{} is not a valid node score; input line omitted.'.format(l.strip()))
+
+    if len(nodes) == 0:
+        raise Exception('No node scores; check {}.'.format(filename))
+
+    return nodes, scores
+
+def load_edge_list(filename):
+    '''
+    Load edge list.
+    '''
+    edge_list = list()
+    with open(filename, 'r') as f:
+        for l in f:
+            if not l.startswith('#'):
+                arrs = l.strip().split()
+                if len(arrs)>=2:
+                    u, v = arrs[:2]
+                    edge_list.append((u, v))
+                elif arrs:
+                    raise Warning('{} is not a valid edge; input line omitted.'.format(l.strip()))
+
+    if not edge_list:
+        raise Exception('Edge list has no edges; check {}.'.format(filename))
+
+    return edge_list
+
+def load_matrix(filename, matrix_name='A', dtype=np.float32):
+    '''
+    Load matrix.
+    '''
+    import h5py
+
+    f = h5py.File(filename, 'r')
+    if matrix_name in f:
+        A = np.asarray(f[matrix_name].value, dtype=dtype)
+    else:
+        raise KeyError('Matrix {} is not in {}.'.format(matrix_name, filename))
+    f.close()
+    return A
+
+def save_matrix(filename, A, matrix_name='A', dtype=np.float32):
+    '''
+    Save matrix.
+    '''
+    import h5py
+
+    f = h5py.File(filename, 'a')
+    if matrix_name in f:
+        del f[matrix_name]
+    f[matrix_name] = np.asarray(A, dtype=dtype)
+    f.close()
+
+def status(message=''):
+    '''
+    Write status message to screen; overwrite previous status message and do not
+    advance line.
+    '''
+    import sys
+
+    try:
+        length = status.length
+    except AttributeError:
+        length = 0
+
+    sys.stdout.write('\r'+' '*length + '\r'+str(message))
+    sys.stdout.flush()
+    status.length = max(len(str(message).expandtabs()), length)
