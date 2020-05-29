@@ -60,5 +60,4 @@ Additional information
 ----------------
 
 ### Examples
-See the `examples` directory for an example of each anomaly type that should complete very quickly on most machines.
-
+See the `examples` directory for an example of each anomaly type.
